@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>โอกาสลุ้นไพ่หลัง Flop</title>
+  <style>
+
+  .header {
+    background-color: #111;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #444;
+  }
+
+  .header a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+  }
+
+  .header a:hover {
+    background-color: #222;
+  }
+  
+    body {
+      background-color: #000;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    table {
+      width: 95%;
+      margin: auto;
+      border-collapse: collapse;
+      background-color: #111;
+      color: white;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+    }
+    th {
+      background-color: #222;
+    }
+    tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+    <div class="header">
+  <a href="index.html">🏠 Home</a>
+  <a href="clock1.html">⏰ Clock</a>
+  <a href="ranking.html">🏆 Ranking</a>
+  <a href="Drawchart">♠️ Out Draw Chart</a>
+</div>
+
+  <h1>% การติด หลัง Flop</h1>
+  <h3>(แยกตาม Turn / River / รวม 2 ใบ)</h3>
+
+  <table>
+    <tr>
+      <th>ประเภทการลุ้น</th>
+      <th>จำนวน Outs</th>
+      <th>Turn (%)</th>
+      <th>River (%)</th>
+      <th>รวม Turn + River (%)</th>
+    </tr>
+    <tr>
+      <td>Flush Draw + Open End</td>
+      <td>12–15</td>
+      <td>~26–32%</td>
+      <td>~26–32%</td>
+      <td>~45–54%</td>
+    </tr>
+    <tr>
+      <td>Flush Draw</td>
+      <td>9</td>
+      <td>~19%</td>
+      <td>~19%</td>
+      <td>~35%</td>
+    </tr>
+    <tr>
+      <td>Open End</td>
+      <td>8</td>
+      <td>~17%</td>
+      <td>~17%</td>
+      <td>~31.5%</td>
+    </tr>
+    <tr>
+      <td>Full House Draw (จาก Set)</td>
+      <td>7</td>
+      <td>~14.5%</td>
+      <td>~14.5%</td>
+      <td>~27%</td>
+    </tr>
+    <tr>
+      <td>Two Overcards</td>
+      <td>6</td>
+      <td>~13%</td>
+      <td>~13%</td>
+      <td>~24%</td>
+    </tr>
+    <tr>
+      <td>Gutshot (Straight ด้านเดียว)</td>
+      <td>4</td>
+      <td>~9%</td>
+      <td>~9%</td>
+      <td>~17%</td>
+    </tr>
+    <tr>
+      <td>One Overcard</td>
+      <td>3</td>
+      <td>~6.5%</td>
+      <td>~6.5%</td>
+      <td>~12.5%</td>
+    </tr>
+    <tr>
+      <td>Set (จาก Pocket Pair)</td>
+      <td>2</td>
+      <td>~4.3%</td>
+      <td>~4.3%</td>
+      <td>~8.4%</td>
+    </tr>
+    <tr>
+      <td>Trips ไป Quads</td>
+      <td>1</td>
+      <td>~2.1%</td>
+      <td>~2.1%</td>
+      <td>~4.3%</td>
+    </tr>
+    <tr>
+      <td>Backdoor Flush Draw</td>
+      <td>ต้องติด 2 ใบ</td>
+      <td>-</td>
+      <td>-</td>
+      <td>~4.2%</td>
+    </tr>
+    <tr>
+      <td>Backdoor Straight Draw</td>
+      <td>ต้องติด 2 ใบ</td>
+      <td>-</td>
+      <td>-</td>
+      <td>~4.2%</td>
+    </tr>
+  </table>
+
+</body>
+</html>
