@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Grand Line Ranking</title>
+  <style>
+
+  .header {
+    background-color: #111;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #444;
+  }
+
+  .header a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+  }
+
+  .header a:hover {
+    background-color: #222;
+  }
+
+    body {
+      background-color: #000;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 30px 0 30px;
+      color: #fff;
+      font-size: 28px;
+    }
+
+    .pyramid-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .pyramid-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .image-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #111;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+      width: 120px;
+    }
+
+    .image-rank {
+      font-size: 18px;
+      font-weight: bold;
+      color: #00ffff;
+      margin-bottom: 6px;
+    }
+
+    .image-box img {
+      width: 90px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #fff;
+    }
+
+    .image-name {
+      margin-top: 8px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .score {
+      margin-top: 4px;
+      font-weight: bold;
+      color: #ffd700;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html">🏠 Home</a>
+  <a href="clock.html">⏰ Clock</a>
+  <a href="ranking.html">🏆 Ranking</a>
+  <a href="out-hit-card.html">♠️ Out Hit Card</a>
+</div>
+
+  <!-- 🔹 โลโก้พื้นหลัง -->
+  <div class="bg-logo"></div>
+
+  <!-- 🔹 หัวข้อ -->
+  <h1>Grand Line Ranking</h1>
+
+  <!-- 🔹 โซนพีระมิด -->
+  <div class="pyramid-container" id="pyramidContainer"></div>
+
+  <!-- 🔹 สคริปต์แสดงอันดับ -->
+  <script>
+    const images = [
+      { name: 'ReR9', score: 27000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_5412b03d93dc9ea33ec6.jpeg' },
+      { name: '8Monday', score: 10000000, url: 'https://img2.pic.in.th/pic/IMG_5360d1ee127136b14a1e.jpeg' },
+      { name: 'GrayJoy', score: 15900000, url: 'https://img2.pic.in.th/pic/IMG_5333cf576f804fe75e14.jpeg' },
+      { name: 'Satang', score: 10000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_52817329a10906dee595.jpeg' },
+      { name: 'SA I', score: 5000000, url: 'https://img2.pic.in.th/pic/IMG_524101b89147604a1148.jpeg' },
+      { name: 'Conan G', score: 5000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_518812db93366a70e61f.jpeg' },
+      { name: 'TANZEGUET', score: 17000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_490454bf30696079fd8e.jpeg' },
+      { name: 'zj', score: 5000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_458449b5a829de9873a9.jpeg' },
+      { name: 'Ploy Pegion', score: 7000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_44926cab8da16d4a9220.jpeg' },
+      { name: 'Tae Custom', score: 5000000, url: 'https://img2.pic.in.th/pic/IMG_4157.jpeg' },
+      { name: 'Bank Shaman', score: 5000000, url: 'https://img2.pic.in.th/pic/IMG_544486abf186403af404.jpeg' }
+    ];
+
+    images.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.name.localeCompare(b.name);
+    });
+
+    const container = document.getElementById('pyramidContainer');
+    let currentRank = 1;
+    let previousScore = null;
+    let displayedRank = 1;
+    let index = 0;
+
+    const pyramidRows = [1, 2, 3];
+    for (let rowSize of pyramidRows) {
+      const row = document.createElement('div');
+      row.className = 'pyramid-row';
+
+      for (let i = 0; i < rowSize && index < images.length; i++, index++) {
+        const img = images[index];
+        if (img.score !== previousScore) displayedRank = currentRank;
+        previousScore = img.score;
+
+        const rank = displayedRank === 1 ? '🥇' :
+                     displayedRank === 2 ? '🥈' :
+                     displayedRank === 3 ? '🥉' : `อันดับ ${displayedRank}`;
+
+        row.innerHTML += `
+          <div class="image-box">
+            <div class="image-rank">${rank}</div>
+            <img src="${img.url}" alt="${img.name}">
+            <div class="image-name">${img.name}</div>
+            <div class="score">${img.score.toLocaleString()} เบรี</div>
+          </div>`;
+        currentRank++;
+      }
+
+      container.appendChild(row);
+    }
+
+    while (index < images.length) {
+      const row = document.createElement('div');
+      row.className = 'pyramid-row';
+
+      for (let i = 0; i < 4 && index < images.length; i++, index++) {
+        const img = images[index];
+        if (img.score !== previousScore) displayedRank = currentRank;
+        previousScore = img.score;
+
+        const rank = displayedRank === 1 ? '🥇' :
+                     displayedRank === 2 ? '🥈' :
+                     displayedRank === 3 ? '🥉' : `อันดับ ${displayedRank}`;
+
+        row.innerHTML += `
+          <div class="image-box">
+            <div class="image-rank">${rank}</div>
+            <img src="${img.url}" alt="${img.name}">
+            <div class="image-name">${img.name}</div>
+            <div class="score">${img.score.toLocaleString()} เบรี</div>
+          </div>`;
+        currentRank++;
+      }
+
+      container.appendChild(row);
+    }
+  </script>
+</body>
+</html>
