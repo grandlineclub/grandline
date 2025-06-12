@@ -61,16 +61,18 @@
       gap: 20px;
     }
 
-    .image-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: #111;
-      border-radius: 12px;
-      padding: 10px;
-      box-shadow: 0 4px 12px rgba(255,255,255,0.05);
-      width: 120px;
-    }
+.image-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #111;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+  width: 120px;
+  overflow: hidden; /* 🔸 เพิ่มเพื่อ crop รูป */
+  height: 250px;     /* 🔸 ความสูงกล่องรวม */
+}
 
     .image-rank {
       font-size: 18px;
@@ -79,13 +81,14 @@
       margin-bottom: 6px;
     }
 
-    .image-box img {
-      width: 90px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 2px solid #fff;
-    }
+.image-box img {
+  width: 100%;
+  height: 152px; /* 🔸 ลดความสูงของภาพเพื่อ crop */
+  object-fit: cover;
+  object-position: top; /* 🔸 ช่วยให้ crop จากด้านล่าง */
+  border-radius: 8px;
+  border: 2px solid #fff;
+}
 
     .image-name {
       margin-top: 8px;
@@ -127,7 +130,7 @@
       { name: 'Satang', score: 10000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_52817329a10906dee595.jpeg' },
       { name: 'SA I', score: 5000000, url: 'https://img2.pic.in.th/pic/IMG_524101b89147604a1148.jpeg' },
       { name: 'Conan G', score: 5000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_518812db93366a70e61f.jpeg' },
-      { name: 'TANZEGUET', score: 17000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_490454bf30696079fd8e.jpeg' },
+      { name: 'TANZEGUET', score: 22000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_490454bf30696079fd8e.jpeg' },
       { name: 'zj', score: 5000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_458449b5a829de9873a9.jpeg' },
       { name: 'Ploy Pegion', score: 7000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_44926cab8da16d4a9220.jpeg' },
       { name: 'Tae Custom', score: 5000000, url: 'https://img2.pic.in.th/pic/IMG_4157.jpeg' },
