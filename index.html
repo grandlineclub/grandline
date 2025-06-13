@@ -153,12 +153,9 @@
   let currentRank = 1;
   for (const score of Object.keys(grouped).sort((a, b) => b - a)) {
     const group = grouped[score];
-    const rank = currentRank === 1 ? 'ราชาโจรสลัด
-' :
-                 currentRank === 2 ? 'จักรพรรดิลำดับที่ 2
-' :
-                 currentRank === 3 ? 'จักรพรรดิลำดับที่ 3
-' : `อันดับ ${currentRank}`;
+   const rank = currentRank === 1 ? '🥇' :
+                 currentRank === 2 ? '🥈' :
+                 currentRank === 3 ? '🥉' : `อันดับ ${currentRank}`;
 
     // แบ่งเป็นชุดละไม่เกิน 4 รูป
     for (let i = 0; i < group.length; i += 4) {
