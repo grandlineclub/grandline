@@ -5,29 +5,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet" />
   <title>Grand Line Poker Clock</title>
   <style>
-
-      .header {
-    background-color: #111;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    border-bottom: 1px solid #444;
-  }
-
-  .header a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: background 0.3s;
-  }
-
-  .header a:hover {
-    background-color: #222;
-  }
     body {
       background-color: #000;
       color: white;
@@ -211,14 +188,6 @@
 </head>
 <body>
 
-  <div class="header">
-  <a href="index.html">🏠 Home</a>
-  <a href="clock1.html">⏰ Clock</a>
-  <a href="index.html">🏆 Ranking</a>
-  <a href="drawchart.html">♠️ Out Hit Card</a>
-  <a href="preflop.html">🃏 Preflop Range</a>
-</div>
-
   <div id="tournamentName">Black Bridge NLH Turbo Poker Tournament #1</div>
 
   <div id="rotatingContainer">
@@ -272,24 +241,27 @@
 
   <script>
     const levels = [
-      { blinds: "100 / 100", duration: 900 },
-      { blinds: "100 / 200", duration: 899 },
-      { blinds: "200 / 300", duration: 899 },
-      { blinds: "200 / 400", duration: 899 },
-      { blinds: "300 / 500", duration: 899 },
-      { blinds: "300 / 600", duration: 899 },
-      { blinds: "400 / 800", duration: 899 },
-      { blinds: "500 / 1,000", duration: 899 },
+      { blinds: "100 / 100", duration: 600 },
+      { blinds: "100 / 200", duration: 599 },
+      { blinds: "200 / 400", duration: 599 },
+      { blinds: "300 / 600", duration: 599 },
+      { blinds: "400 / 800", duration: 599 },
+      { blinds: "500 / 1,000", duration: 599 },
+      { blinds: "Break", duration: 599 },
       { blinds: "600 / 1,200", duration: 899 },
-      { blinds: "800 / 1,500", duration: 899 },
+      { blinds: "800 / 1,600", duration: 899 },
       { blinds: "1,000 / 2,000", duration: 899 },
-      { blinds: "1,000 / 2,500", duration: 899 },
+      { blinds: "1,200 / 2,500", duration: 899 },
       { blinds: "1,500 / 3,000", duration: 899 },
+{ blinds: "Break", duration: 599 },
+      { blinds: "1,700 / 3,500", duration: 899 },
       { blinds: "2,000 / 4,000", duration: 899 },
-      { blinds: "2,000 / 5,000", duration: 899 },
-      { blinds: "3,000 / 6,000", duration: 899 },
       { blinds: "4,000 / 8,000", duration: 899 },
       { blinds: "5,000 / 10,000", duration: 899 },
+      { blinds: "7,000 / 15,000", duration: 899 },
+{ blinds: "10,000 / 20,000", duration: 899 },
+{ blinds: "15,000 / 30,000", duration: 899 },
+{ blinds: "20,000 / 40,000", duration: 899 },
     ];
 
     let currentLevel = 0;
@@ -324,57 +296,57 @@
     }
 
     function updateDisplay() {
-      timerDisplay.textContent = formatTime(timeLeft);
-      const currentBlinds = levels[currentLevel].blinds;
+  timerDisplay.textContent = formatTime(timeLeft);
+  const currentBlinds = levels[currentLevel].blinds;
 
-      if (currentBlinds === "Break") {
-        blindsDisplay.textContent = "Break";
+  if (currentBlinds === "Break") {
+    // --- กรณีเป็น Break ---
+    blindsDisplay.textContent = "พัก Break 10 นาทีคับ";
+    nextLevelDisplay.textContent =
+      "Next level: " + (levels[currentLevel + 1]?.blinds || "-");
+    rotatingContainer.style.display = "none";
+    prizePoolDisplay.style.display = "none";
+  } else {
+    // --- กรณีปกติ ---
+    const [sb, bb] = currentBlinds.split('/').map(s => s.trim());
+    blindsDisplay.textContent = `${sb} / ${bb} (${bb})`;
+
+    const bbValue = parseInt(bb.replace(/,/g, ''));
+    const prizeVisible = prizePoolDisplay.style.display !== "none";
+
+    rotatingContainer.style.display = (bbValue >= 3100 || prizeVisible) ? "none" : "block";
+
+    if (currentLevel < levels.length - 1) {
+      const next = levels[currentLevel + 1];
+      if (next.blinds === "Break") {
+        nextLevelDisplay.textContent = "Next level: Break";
       } else {
-        const [sb, bb] = currentBlinds.split('/').map(s => s.trim());
-        blindsDisplay.textContent = `${sb} / ${bb} (${bb})`;
-
-        // Added logic for rotating message display
-        const bbValue = parseInt(bb.replace(/,/g, ''));
-        const prizeVisible = prizePoolDisplay.style.display !== "none";
-
-        if (bbValue >= 3100 || prizeVisible) {
-          rotatingContainer.style.display = "none";
-        } else {
-          rotatingContainer.style.display = "block";
-        }
+        const nextBig = next.blinds.split('/')[1].trim();
+        nextLevelDisplay.textContent = `Next level: ${next.blinds} (${nextBig})`;
       }
-
-      if (currentLevel < levels.length - 1) {
-        const next = levels[currentLevel + 1];
-        if (next.blinds === "Break") {
-          nextLevelDisplay.textContent = "Next level: Break";
-        } else {
-          const nextBig = next.blinds.split('/')[1].trim();
-          nextLevelDisplay.textContent = `Next level: ${next.blinds} (${nextBig})`;
-        }
-      } else {
-        nextLevelDisplay.textContent = "Final Level";
-      }
-
-      const totalDuration = levels[currentLevel].duration;
-      const percentage = (timeLeft / totalDuration) * 100;
-      progressBar.style.width = percentage + "%";
-
-      if (percentage > 40) {
-        progressBar.style.background = `linear-gradient(to right, #00cc66, #aaff00)`;
-      } else if (percentage > 20) {
-        progressBar.style.background = `linear-gradient(to right, #ffee00, #ff9900)`;
-      } else {
-        progressBar.style.background = `linear-gradient(to right, #ff3300, #ff0000)`;
-      }
-
-      updateAverageStack();
-      updatePrizePool();
-
-      // Added logic for rotating message content
-      const msgIndex = Math.floor((levels[currentLevel].duration - timeLeft) / 120 ) % messages.length;
-      rotatingMessage.textContent = messages[msgIndex];
+    } else {
+      nextLevelDisplay.textContent = "Final Level";
     }
+  }
+
+  const totalDuration = levels[currentLevel].duration;
+  const percentage = (timeLeft / totalDuration) * 100;
+  progressBar.style.width = percentage + "%";
+
+  if (percentage > 40) {
+    progressBar.style.background = `linear-gradient(to right, #00cc66, #aaff00)`;
+  } else if (percentage > 20) {
+    progressBar.style.background = `linear-gradient(to right, #ffee00, #ff9900)`;
+  } else {
+    progressBar.style.background = `linear-gradient(to right, #ff3300, #ff0000)`;
+  }
+
+  updateAverageStack();
+  updatePrizePool();
+
+  const msgIndex = Math.floor((levels[currentLevel].duration - timeLeft) / 120 ) % messages.length;
+  rotatingMessage.textContent = messages[msgIndex];
+}
 
     function startLevel() {
       timeLeft = levels[currentLevel].duration;
@@ -502,44 +474,72 @@
       }
     }
 
-    function updatePrizePool() {
-      const blindsValue = levels[currentLevel].blinds;
-      if (!blindsValue.includes(" / ")) {
-        prizePoolDisplay.style.display = "none";
-        return;
-      }
+   function updatePrizePool() {
+  const blindsValue = levels[currentLevel].blinds;
+  if (!blindsValue.includes(" / ")) {
+    prizePoolDisplay.style.display = "none";
+    return;
+  }
 
-      const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
-      if (bb < 3100) {
-        prizePoolDisplay.style.display = "none";
-        return;
-      }
+  const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
+  if (bb < 3100) {
+    prizePoolDisplay.style.display = "none";
+    return;
+  }
 
-      prizePoolDisplay.style.display = "block";
+  prizePoolDisplay.style.display = "block";
 
-      const totalPrize = buyIn * 200;
-      let text = ``;
+  const buyInFee = 1500; 
+  const grossPrize = buyIn * buyInFee;
+  const totalPrize = Math.floor(grossPrize - 13000);
 
-      if (buyIn <= 15) {
-        let first = Math.round(totalPrize / 100) * 100;
-        text += `🥇 ${first.toLocaleString()}`;
-      } else if (buyIn <= 22) {
-        let first = Math.round(totalPrize * 0.70 / 100) * 100;
-        let second = Math.round(totalPrize * 0.30 / 100) * 100;
-        let diff = totalPrize - (first + second);
-        first += diff;
-        text += `🥇 ${first.toLocaleString()}<br>🥈 ${second.toLocaleString()}`;
-      } else {
-        let first = Math.round(totalPrize * 0.5 / 100) * 100;
-        let second = Math.round(totalPrize * 0.3 / 100) * 100;
-        let third = Math.round(totalPrize * 0.2 / 100) * 100;
-        let diff = totalPrize - (first + second + third);
-        first += diff;
-        text += `🥇 ${first.toLocaleString()}<br>🥈 ${second.toLocaleString()}<br>🥉 ${third.toLocaleString()}`;
-      }
+  const payoutTable = {
 
-      prizePoolDisplay.innerHTML = text;
-    }
+    2: [70, 30],
+    3: [50, 30, 20],
+    4: [40, 30, 20, 10],
+    5: [40, 25, 15, 10, 10],
+    6: [35, 22, 17, 13, 8, 5],
+    7: [32, 21, 17, 14, 9, 4, 3],
+    8: [30, 20, 16, 14, 10, 5, 3, 2],
+    9: [28, 18, 15, 13, 10, 6, 4, 3, 3]
+  };
+
+  let numWinners = Math.max(1, Math.floor(buyIn * 0.15));
+
+  const payoutPercents = payoutTable[numWinners] || [100];
+
+  let prizes = [];
+  let sum = 0;
+
+  for (let i = 0; i < payoutPercents.length; i++) {
+    let pct = payoutPercents[i];
+    let prize = Math.floor((totalPrize * pct) / 100 / 100) * 100;
+    prizes.push(prize);
+    sum += prize;
+  }
+
+   let diff = totalPrize - sum;
+      prizes[0] += diff;
+
+const ranks = ["🥇", "🥈", "🥉", "4th", "5th", "6th", "7th", "8th", "9th"];
+
+      let lines = ["", "", ""]; // เตรียม 3 บรรทัด
+
+for (let i = 0; i < prizes.length; i++) {
+  const rank = ranks[i] || `${i + 1}th`;
+  const text = `${rank} ${prizes[i].toLocaleString()}`;
+  if (i < 3) {
+    lines[0] += (lines[0] ? " | " : "") + text;
+  } else if (i < 6) {
+    lines[1] += (lines[1] ? " | " : "") + text;
+  } else {
+    lines[2] += (lines[2] ? " | " : "") + text;
+  }
+}
+
+prizePoolDisplay.innerHTML = lines.filter(line => line).join("<br>");
+}
 
     const messages = [
       "ไม่มีเหตุผลที่ต้องเล่นทุกมือ แต่ทุกมือต้องมีเหตุผลที่เล่น",
