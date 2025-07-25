@@ -520,10 +520,10 @@
       const totalPrize = (buyIn * 200) - 200;
       let text = ``;
 
-      if (buyIn <= 15) {
+      if (buyIn <= 16) {
         let first = Math.round(totalPrize / 100) * 100;
         text += `🥇 ${first.toLocaleString()}`;
-      } else if (buyIn <= 22) {
+      } else if (buyIn <= 23) {
         let first = Math.round(totalPrize * 0.70 / 100) * 100;
         let second = Math.round(totalPrize * 0.30 / 100) * 100;
         let diff = totalPrize - (first + second);
