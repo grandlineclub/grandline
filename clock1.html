@@ -517,10 +517,10 @@
 
       prizePoolDisplay.style.display = "block";
 
-      const totalPrize = (buyIn * 200) - 200;
+      const totalPrize = (buyIn * 200);
       let text = ``;
 
-      if (buyIn <= 16) {
+      if (buyIn <= 15) {
         let first = Math.round(totalPrize / 100) * 100;
         text += `🥇 ${first.toLocaleString()}`;
       } else if (buyIn <= 23) {
