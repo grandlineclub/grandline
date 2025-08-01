@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet" />
+  <title>Grand Line Poker Clock</title>
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      transition: background-color 0.5s ease;
+    }
+    #tournamentName {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 2px;
+      margin-top: 150px;
+    }
+    #timerContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 1px;
+      flex-direction: column;
+    }
+    .logo {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+    }
+    #timer {
+      font-size: 188px;
+      font-weight: bold;
+      margin: 0;
+      line-height: 1;
+    }
+    #designerCredit {
+      color: #222;
+      position: absolute;
+      right: 10px;
+      top: 0;
+      bottom: 0;
+      margin: auto 0;
+      font-size: 14px;
+      font-style: italic;
+      opacity: 0.6;
+      height: fit-content;
+      pointer-events: none;
+    }
+    #progressBarContainer {
+      width: 100%;
+      height: 20px;
+      background-color: #222;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 4px;
+      max-width: 600px;
+      position: relative;
+    }
+    #pauseOverlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 140px;
+      font-weight: bold;
+      color: #00f;
+      display: none;
+      pointer-events: none;
+    }
+    .info {
+      font-size: 68px;
+      font-weight: bold;
+      margin: 2px 0;
+    }
+    #nextLevel, #averageStack {
+      font-size: 18px;
+      font-weight: normal;
+    }
+    button {
+      font-size: 20px;
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #444;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #666;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      max-width: 700px;
+      margin: 0 auto;
+      margin-top: 6px;
+    }
+    #progressBar {
+      height: 100%;
+      width: 100%;
+      background: green;
+      transition: width 1s linear, background 0.5s ease;
+    }
+    .bounty-info {
+      font-family: 'Kanit', sans-serif;
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 0px;
+      color: #ffcc00;
+    }
+    #prizePoolDisplay {
+      font-size: 38px;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+    .input-section {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 200px;
+      flex-wrap: wrap;
+    }
+    .input-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .input-box span {
+      font-size: 20px;
+    }
+    .input-box button {
+      padding: 4px 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="tournamentName">GrandLine Tournament 2025</div>
+  <div id="timerContainer">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 30px;">
+      <img class="logo" src="https://img2.pic.in.th/pic/IMG_3907b97570236459f0f7.png" alt="Logo Left" />
+      <div id="timer">00:10:00</div>
+      <img class="logo" src="https://img2.pic.in.th/pic/IMG_3907b97570236459f0f7.png" alt="Logo Right" />
+      <div id="pauseOverlay">PAUSE</div>
+    </div>
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+      <div id="designerCredit">Design by NewZ Sensei</div>
+    </div>
+  </div>
+
+  <div class="info" id="blinds">100/200</div>
+  <div class="info" id="nextLevel">Next level: 200/400 (400)</div>
+  <div class="info" id="averageStack">Average Stack: -</div>
+  <div class="bounty-info" id="bountyTotal">🏆 Bounty Prize Pool: -</div>
+  <div class="info" id="prizePoolDisplay" style="display: none;">Prize Pool: -</div>
+
+  <div class="input-section">
+    <div class="input-box">
+      <span>Remaining:</span>
+      <button onclick="adjustRemain(-1)">-</button>
+      <span id="remainCount">9</span>
+      <button onclick="adjustRemain(1)">+</button>
+    </div>
+
+    <div class="input-box">
+      <span>Register</span>
+      <button onclick="adjustBuyIn(-1)">-</button>
+      <span id="buyInCount">9</span>
+      <button onclick="adjustBuyIn(1)">+</button>
+    </div>
+
+    <div class="controls">
+      <button onclick="confirmPrevLevel()">Previous</button>
+      <button onclick="subtractTime()">-30</button>
+      <button onclick="togglePause()"><span id="pausePlayText">Pause</span></button>
+      <button onclick="addTime()">+30</button>
+      <button onclick="confirmNextLevel()">Next</button>
+    </div>
+  </div>
+
+  <audio id="alert60Custom" src="https://media.vocaroo.com/mp3/1aQzREpVljO0"></audio>
+  <audio id="countdown" src="https://media.vocaroo.com/mp3/1ljAIqnw289L"></audio>
+  <audio id="whistleSound" src="https://media.vocaroo.com/mp3/1mS0nADire2c"></audio>
+
+  <script>
+    const levels = [
+      { blinds: "100 / 200", duration: 900 },
+      { blinds: "200 / 400", duration: 899 },
+      { blinds: "300 / 600", duration: 899 },
+      { blinds: "400 / 800", duration: 899 },
+      { blinds: "500 / 1,000", duration: 899 },
+      { blinds: "600 / 1,200", duration: 899 },
+      { blinds: "800 / 1,500", duration: 899 },
+      { blinds: "Break", duration: 599 },
+      { blinds: "1,000 / 2,000", duration: 899 },
+      { blinds: "1,500 / 3,000", duration: 899 },
+      { blinds: "2,000 / 4,000", duration: 899 },
+      { blinds: "2,500 / 5,000", duration: 899 },
+      { blinds: "3,000 / 6,000", duration: 899 },
+      { blinds: "4,000 / 8,000", duration: 899 },
+      { blinds: "8,000 / 15,000", duration: 899 },
+ { blinds: "10,000 / 20,000", duration: 3600 },
+
+    ];
+
+    let currentLevel = 0;
+    let timeLeft = levels[currentLevel].duration;
+    let countdown;
+    let isPaused = false;
+    let warned60 = false;
+    let warned10 = false;
+
+    let buyIn = 9;
+    let remain = 9;
+
+    const timerDisplay = document.getElementById("timer");
+    const pauseOverlay = document.getElementById("pauseOverlay");
+    const pausePlayText = document.getElementById("pausePlayText");
+    const blindsDisplay = document.getElementById("blinds");
+    const nextLevelDisplay = document.getElementById("nextLevel");
+    const averageStackDisplay = document.getElementById("averageStack");
+    const prizePoolDisplay = document.getElementById("prizePoolDisplay");
+    const bountyDisplay = document.getElementById("bountyTotal");
+    const alert60Custom = document.getElementById("alert60Custom");
+    const countdownSound = document.getElementById("countdown");
+    const whistleSound = document.getElementById("whistleSound");
+    const progressBar = document.getElementById("progressBar");
+
+    function formatTime(seconds) {
+      const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const secs = String(seconds % 60).padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function updateDisplay() {
+      timerDisplay.textContent = formatTime(timeLeft);
+      const currentBlinds = levels[currentLevel].blinds;
+
+      if (currentBlinds === "Break") {
+        blindsDisplay.textContent = "Break";
+      } else {
+        const [sb, bb] = currentBlinds.split('/').map(s => s.trim());
+        blindsDisplay.textContent = `${sb} / ${bb} (${bb})`;
+      }
+
+      if (currentLevel < levels.length - 1) {
+        const next = levels[currentLevel + 1];
+        const nextBig = next.blinds.split('/')[1].trim();
+        nextLevelDisplay.textContent = `Next level: ${next.blinds} (${nextBig})`;
+      } else {
+        nextLevelDisplay.textContent = "Final Level";
+      }
+
+      const totalDuration = levels[currentLevel].duration;
+      const percentage = (timeLeft / totalDuration) * 100;
+      progressBar.style.width = percentage + "%";
+      progressBar.style.background = percentage > 40
+        ? `linear-gradient(to right, #00cc66, #aaff00)`
+        : percentage > 20
+        ? `linear-gradient(to right, #ffee00, #ff9900)`
+        : `linear-gradient(to right, #ff3300, #ff0000)`;
+
+      updateAverageStack();
+      updateBountyTotal();
+      updatePrizePool();
+    }
+
+    function updateBountyTotal() {
+      if (buyIn > 0) {
+        const bounty = buyIn * 300;
+        bountyDisplay.textContent = `🏆 Bounty Prize Pool: ${bounty.toLocaleString()}`;
+        bountyDisplay.style.display = "block";
+      } else {
+        bountyDisplay.textContent = "🏆 Bounty Total: -";
+        bountyDisplay.style.display = "none";
+      }
+    }
+
+    function updateAverageStack() {
+      if (remain <= 3) {
+        averageStackDisplay.style.display = "none";
+        return;
+      }
+
+      averageStackDisplay.style.display = "block";
+
+      if (buyIn > 0 && remain > 0) {
+        const avg = Math.floor((buyIn * 15000) / remain);
+        averageStackDisplay.textContent = `Average Stack: ${avg.toLocaleString()}`;
+      } else {
+        averageStackDisplay.textContent = "Average Stack: -";
+      }
+    }
+
+    function updatePrizePool() {
+      const blindsValue = levels[currentLevel].blinds;
+      if (!blindsValue.includes(" / ")) {
+        prizePoolDisplay.style.display = "none";
+        return;
+      }
+
+      const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
+      if (bb < 1600) {
+        prizePoolDisplay.style.display = "none";
+        return;
+      }
+
+      prizePoolDisplay.style.display = "block";
+
+      const totalPrize = buyIn * 450;
+      let text = "";
+
+      if (buyIn <= 15) {
+        let first = Math.round(totalPrize / 100) * 100;
+        text += `🥇 ${first.toLocaleString()}`;
+      } else if (buyIn <= 22) {
+        let first = Math.round(totalPrize * 0.70 / 100) * 100;
+        let second = Math.round(totalPrize * 0.30 / 100) * 100;
+        first += totalPrize - (first + second);
+        text += `🥇 ${first.toLocaleString()}<br>🥈 ${second.toLocaleString()}`;
+      } else {
+        let first = Math.round(totalPrize * 0.5 / 100) * 100;
+        let second = Math.round(totalPrize * 0.3 / 100) * 100;
+        let third = Math.round(totalPrize * 0.2 / 100) * 100;
+        first += totalPrize - (first + second + third);
+        text += `🥇 ${first.toLocaleString()}<br>🥈 ${second.toLocaleString()}<br>🥉 ${third.toLocaleString()}`;
+      }
+
+      prizePoolDisplay.innerHTML = text;
+    }
+
+    function adjustBuyIn(val) {
+      if (val > 0 && !confirm("ยืนยันเพิ่ม ผู้เล่น Buy in ใช่หรือไม่?")) return;
+      if (val < 0 && !confirm("ยืนยันลบ ผู้เล่น Buy in ใช่หรือไม่?")) return;
+      buyIn = Math.max(0, buyIn + val);
+      document.getElementById("buyInCount").textContent = buyIn;
+      updateDisplay();
+    }
+
+    function adjustRemain(val) {
+      remain = Math.max(0, remain + val);
+      document.getElementById("remainCount").textContent = remain;
+      updateDisplay();
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+      pausePlayText.textContent = isPaused ? "Play" : "Pause";
+      pauseOverlay.style.display = isPaused ? "block" : "none";
+    }
+
+    function confirmNextLevel() {
+      if (confirm("คุณต้องการ Next ?")) nextLevel();
+    }
+
+    function confirmPrevLevel() {
+      if (confirm("คุณต้องการ Previous ?")) prevLevel();
+    }
+
+    function addTime() {
+      timeLeft += 30;
+      updateDisplay();
+    }
+
+    function subtractTime() {
+      timeLeft = Math.max(0, timeLeft - 30);
+      updateDisplay();
+    }
+
+    function nextLevel() {
+      if (currentLevel < levels.length - 1) {
+        currentLevel++;
+        startLevel();
+      } else {
+        timerDisplay.textContent = "つづく";
+        blindsDisplay.textContent = "โปรดติดตามตอนต่อไป";
+        nextLevelDisplay.textContent = "";
+        progressBar.style.width = "0%";
+      }
+    }
+
+    function prevLevel() {
+      if (currentLevel > 0) {
+        currentLevel--;
+        startLevel();
+      }
+    }
+
+    function startLevel() {
+      timeLeft = levels[currentLevel].duration;
+      updateDisplay();
+      warned60 = false;
+      warned10 = false;
+      clearInterval(countdown);
+      countdown = setInterval(() => {
+        if (!isPaused) {
+          timeLeft--;
+          updateDisplay();
+          if (timeLeft === 60 && !warned60) {
+            alert60Custom.play();
+            warned60 = true;
+          }
+          if (timeLeft === 10 && !warned10) {
+            countdownSound.play();
+            document.body.style.backgroundColor = "#900";
+            warned10 = true;
+          }
+          if (timeLeft <= 1 && timeLeft > 0) whistleSound.play();
+          if (timeLeft <= 0) {
+            countdownSound.pause();
+            document.body.style.backgroundColor = "#000";
+            clearInterval(countdown);
+            nextLevel();
+          }
+        }
+      }, 1000);
+    }
+
+    startLevel();
+  </script>
+</body>
+</html>
