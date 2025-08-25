@@ -396,7 +396,7 @@
       const blindsValue = levels[currentLevel].blinds;
       if (!blindsValue.includes(" / ")) { prizePoolDisplay.style.display = "none"; return; }
       const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
-      if (bb < 2000) { prizePoolDisplay.style.display = "none"; return; }
+      if (bb < 1800) { prizePoolDisplay.style.display = "none"; return; }
       prizePoolDisplay.style.display = "block";
 
       const totalPrize = (buyIn * 600);
