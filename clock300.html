@@ -385,7 +385,7 @@
       if (remain <= 4) { averageStackDisplay.style.display = "none"; return; }
       averageStackDisplay.style.display = "block";
       if (buyIn > 0 && remain > 0) {
-        const avg = Math.floor((buyIn * 10000) / remain);
+        const avg = Math.floor((buyIn * 12000) / remain);
         averageStackDisplay.textContent = `Average Stack: ${avg.toLocaleString()}`;
       } else {
         averageStackDisplay.textContent = "Average Stack: -";
@@ -396,10 +396,10 @@
       const blindsValue = levels[currentLevel].blinds;
       if (!blindsValue.includes(" / ")) { prizePoolDisplay.style.display = "none"; return; }
       const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
-      if (bb < 1200) { prizePoolDisplay.style.display = "none"; return; }
+      if (bb < 1500) { prizePoolDisplay.style.display = "none"; return; }
       prizePoolDisplay.style.display = "block";
 
-      const totalPrize = (buyIn * 300);
+      const totalPrize = (buyIn * 400);
       let text = ``;
       if (buyIn <= 15) {
         let first = Math.round(totalPrize / 100) * 100;
