@@ -69,6 +69,16 @@
   color: #F13596;
   margin-top: 4px;
 }
+    
+#playerInfo .label {
+  color: #F13596;  /* คำว่า Players: */
+}
+#playerRemain {
+  color: #FFFFFF;/* ผู้เล่นที่เหลือ */
+}
+#playerBuyIn {
+  color: #FFFFFF;/* ผู้เล่นที่สมัครทั้งหมด */
+}
 
     button {
       font-size: 20px; margin: 10px; padding: 10px 20px; background-color: #444;
@@ -144,7 +154,11 @@
   <div class="info" id="blinds">100/200</div>
   <div class="info" id="nextLevel">Next level: 200/400 (400)</div>
   <div class="info" id="averageStack">Average Stack: -</div>
-  <div id="playerInfo">Players: 9 / 9</div>
+  <div id="playerInfo">
+  <span class="label">Players:</span>
+  <span id="playerRemain">9</span> /
+  <span id="playerBuyIn">9</span>
+</div>
   <div class="info" id="prizePoolDisplay" style="display: none;">Prize Pool: -</div>
 
   <div class="input-section">
