@@ -62,7 +62,7 @@
 
     #averageStack { font-size: 28px; font-weight: bold; font-family: 'Kanit', sans-serif; color:#81D8D0; }
 
-   #playerInfo {
+   # {
   font-size: 26px;
   font-weight: bold;
   font-family: 'Kanit', sans-serif;
@@ -399,9 +399,13 @@
       updateDisplay();
     }
 
-    function updatePlayerInfo() {
-      playerInfoDisplay.textContent = `Players: ${remain} / ${buyIn}`;
-    }
+  function updatePlayerInfo() {
+  playerInfoDisplay.innerHTML = `
+    <span class="label">Players:</span>
+    <span id="playerRemain">${remain}</span> /
+    <span id="playerBuyIn">${buyIn}</span>
+  `;
+}
 
     function updateAverageStack() {
       if (remain <= 4) { averageStackDisplay.style.display = "none"; return; }
