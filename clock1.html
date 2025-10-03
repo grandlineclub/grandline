@@ -183,6 +183,14 @@
     <button onclick="confirmNextLevel()">Next</button>
   </div>
 
+<div class="input-box booking-bonus" style="margin-top: 40px; display: flex; flex-direction: column; align-items: center;">
+  <span>Booking Bonus:</span>
+  <input type="number" id="bookingBonusInput" value="200" 
+         style="width:100px; font-size:18px; text-align:right; margin-top: 8px;" 
+         oninput="updateBookingBonus()" />
+</div>
+
+
   <audio id="alert60Custom" preload="auto" src="https://media.vocaroo.com/mp3/1aQzREpVljO0"></audio>
   <audio id="countdown"    preload="auto" src="https://media.vocaroo.com/mp3/1ljAIqnw289L"></audio>
   <audio id="whistleSound" preload="auto" src="https://media.vocaroo.com/mp3/1mS0nADire2c"></audio>
@@ -419,34 +427,68 @@
       }
     }
 
-    function updatePrizePool() {
-      const blindsValue = levels[currentLevel].blinds;
-      if (!blindsValue.includes(" / ")) { prizePoolDisplay.style.display = "none"; return; }
-      const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
-      if (bb < 1200) { prizePoolDisplay.style.display = "none"; return; }
-      prizePoolDisplay.style.display = "block";
+let bookingBonus = 200;
 
-      const totalPrize = (buyIn * 200);
-      let text = ``;
-      if (buyIn <= 15) {
-        let first = Math.round(totalPrize / 100) * 100;
-        text += `🥇 ${first.toLocaleString()}`;
-      } else if (buyIn <= 23) {
-        let first = Math.round(totalPrize * 0.70 / 100) * 100;
-        let second = Math.round(totalPrize * 0.30 / 100) * 100;
-        let diff = totalPrize - (first + second);
-        first += diff;
-        text += `🥇 ${first.toLocaleString()}<br>🥈 ${second.toLocaleString()}`;
-      } else {
-        let first = Math.round(totalPrize * 0.5 / 100) * 100;
-        let second = Math.round(totalPrize * 0.3 / 100) * 100;
-        let third = Math.round(totalPrize * 0.2 / 100) * 100;
-        let diff = totalPrize - (first + second + third);
-        first += diff;
-        text += `🥇 ${first.toLocaleString()}<br>🥈 ${second.toLocaleString()}<br>🥉 ${third.toLocaleString()}`;
-      }
-      prizePoolDisplay.innerHTML = text;
-    }
+function updateBookingBonus() {
+  bookingBonus = parseInt(document.getElementById("bookingBonusInput").value) || 0;
+  updateDisplay(); // refresh การคำนวนทันที
+}
+
+  function updatePrizePool() {
+  const blindsValue = levels[currentLevel].blinds;
+  if (!blindsValue.includes(" / ")) { 
+    prizePoolDisplay.style.display = "none"; 
+    return; 
+  }
+
+  const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
+  if (bb < 1200) { 
+    prizePoolDisplay.style.display = "none"; 
+    return; 
+  }
+  prizePoolDisplay.style.display = "block";
+
+  const totalPrize = ((buyIn-1) * 200);
+  let text = ``;
+
+  if (buyIn <= 15) {
+    // 1 รางวัล
+    let firstPrize = Math.round(totalPrize / 100) * 100;
+    let firstTotal = firstPrize + bookingBonus;
+    text += `🥇 ${firstPrize.toLocaleString()} + ${bookingBonus.toLocaleString()} = ${firstTotal.toLocaleString()}`;
+  } else if (buyIn <= 23) {
+    // 2 รางวัล
+    let firstPrize = Math.round(totalPrize * 0.70 / 100) * 100;
+    let secondPrize = Math.round(totalPrize * 0.30 / 100) * 100;
+    let diff = totalPrize - (firstPrize + secondPrize);
+    firstPrize += diff;
+
+    // แบ่ง booking bonus ครึ่งละ
+    let bonusSplit = Math.floor(bookingBonus / 2);
+
+    let firstTotal = firstPrize + bonusSplit;
+    let secondTotal = secondPrize + bonusSplit;
+
+    text += `🥇 ${firstPrize.toLocaleString()} + ${bonusSplit.toLocaleString()} = ${firstTotal.toLocaleString()}<br>`;
+    text += `🥈 ${secondPrize.toLocaleString()} + ${bonusSplit.toLocaleString()} = ${secondTotal.toLocaleString()}`;
+  } else {
+    // 3 รางวัล
+    let firstPrize = Math.round(totalPrize * 0.5 / 100) * 100;
+    let secondPrize = Math.round(totalPrize * 0.3 / 100) * 100;
+    let thirdPrize = Math.round(totalPrize * 0.2 / 100) * 100;
+    let diff = totalPrize - (firstPrize + secondPrize + thirdPrize);
+    firstPrize += diff;
+
+    // แบ่ง bonus เฉพาะอันดับ 1
+    let firstTotal = firstPrize + bookingBonus;
+
+    text += `🥇 ${firstPrize.toLocaleString()} + ${bookingBonus.toLocaleString()} = ${firstTotal.toLocaleString()}<br>`;
+    text += `🥈 ${secondPrize.toLocaleString()}<br>`;
+    text += `🥉 ${thirdPrize.toLocaleString()}`;
+  }
+
+  prizePoolDisplay.innerHTML = text;
+}
 
     const messages = [
       "ไม่มีเหตุผลที่ต้องเล่นทุกมือ แต่ทุกมือต้องมีเหตุผลที่เล่น",
