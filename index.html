@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Grand Line Ranking</title>
+  <style>
+  body {
+    background-color: #000;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    text-align: center;
+  }
+
+  h1 {
+    margin: 30px 0 30px;
+    color: #fff;
+    font-size: 28px;
+  }
+
+  .header {
+    background-color: #111;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #444;
+  }
+
+  .header a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+  }
+
+  .header a:hover {
+    background-color: #222;
+  }
+
+  .pyramid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .pyramid-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .image-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #111;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+    width: 120px;
+    overflow: hidden;
+    height: 250px;
+  }
+
+  .image-rank {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ffff;
+    margin-bottom: 6px;
+  }
+
+  .image-box img {
+    width: 100%;
+    height: 152px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 8px;
+    border: 2px solid #fff;
+  }
+
+  .image-name {
+    margin-top: 8px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+
+  .score {
+    margin-top: 4px;
+    font-weight: bold;
+    color: #ffd700;
+  }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html">🏠 Home</a>
+  <a href="clock1.html">⏰ Clock</a>
+  <a href="index.html">🏆 Ranking</a>
+  <a href="drawchart.html">♠️ Out Hit Card</a>
+  <a href="preflop.html">🃏 Preflop Range</a>
+</div>
+
+<h1>Grand Line Ranking</h1>
+<div class="pyramid-container" id="pyramidContainer"></div>
+
+<script>
+const images = [
+  { name: 'ReR9', score: 52000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_5412b03d93dc9ea33ec6.jpeg' },
+  { name: '8Monday', score: 35000000, url: 'https://img2.pic.in.th/pic/IMG_5360d1ee127136b14a1e.jpeg' },
+  { name: 'GrayJoy', score: 25900000, url: 'https://img2.pic.in.th/pic/IMG_5333cf576f804fe75e14.jpeg' },
+  { name: 'Satang', score: 25000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_52817329a10906dee595.jpeg' },
+  { name: 'SA I', score: 17000000, url: 'https://img2.pic.in.th/pic/IMG_524101b89147604a1148.jpeg' },
+  { name: 'Conan G', score: 5000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_518812db93366a70e61f.jpeg' },
+  { name: 'TANZEGUET', score: 77000000, url: 'https://img2.pic.in.th/pic/IMG_81971c713ad390176b54.jpeg' },
+  { name: 'zj', score: 15000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_458449b5a829de9873a9.jpeg' },
+  { name: 'Ploy Pegion', score: 22000000, url: 'https://img2.pic.in.th/pic/IMG_8048fb30edc176aaf81d.jpeg' },
+  { name: 'Tae Custom', score: 15000000, url: 'https://img2.pic.in.th/pic/IMG_4157.jpeg' },
+  { name: 'Pete', score: 10000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_5754afbd7f51c7b34160.jpeg' },
+  { name: 'EmoOKuK', score: 10000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_9361bf23443598a87230.jpeg' },
+  { name: 'EvE', score: 47000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_56919b812a46daf621b0.jpeg'},
+  { name: 'Bank Shaman', score: 35000000, url: 'https://img2.pic.in.th/pic/IMG_544486abf186403af404.jpeg' },
+  { name: 'NOOBiETOON', score: 20000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_5852c0c982e1163b690b.jpeg' },
+  { name: 'Jmz888', score: 15000000, url: 'https://img2.pic.in.th/pic/IMG_5783456a13d10235d0da.jpeg'},
+  { name: 'KTona', score: 20000000, url: 'https://img2.pic.in.th/pic/IMG_59040de829ae992059ea.jpeg'},
+  { name: 'CHAMP', score: 5000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_5959e30d627606b57076.jpeg'},
+  { name: 'Mos', score: 7000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_6238069549bee437c636.jpeg'},
+  { name: 'JuYamal', score: 14000000, url: 'https://img2.pic.in.th/pic/IMG_83784aaae7aa43ef8546.jpeg'},
+  { name: '13aDz', score: 10000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_8046688028c23cb862a8.jpeg'},
+  { name: 'Yakrubya', score: 12000000, url: 'https://img2.pic.in.th/pic/IMG_6898939639fd99a0aec9.jpeg'},
+  { name: 'Balll', score: 10000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_8379a8ad73f57f4052cc.jpeg'},
+  { name: 'OHMMAKER', score: 45000000, url: 'https://img2.pic.in.th/pic/IMG_5690abf3e4134a105391.jpeg' }
+];
+
+// ✅ เรียงตามคะแนน (มาก → น้อย)
+images.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+
+// ✅ จัดอันดับ โดยถ้าคะแนนเท่ากันจะได้ลำดับเดียวกัน
+let rank = 1;
+images.forEach((p, i) => {
+  if (i > 0 && p.score === images[i - 1].score) {
+    p.rank = images[i - 1].rank;
+  } else {
+    p.rank = i + 1;
+  }
+});
+
+const container = document.getElementById('pyramidContainer');
+
+// 🥇 อันดับ 1 แถวเดียว
+const row1 = document.createElement('div');
+row1.className = 'pyramid-row';
+row1.innerHTML = createBox(images[0], '🥇 อันดับ 1');
+container.appendChild(row1);
+
+// 🥈 + 🥉 แถวเดียวกัน
+const row2 = document.createElement('div');
+row2.className = 'pyramid-row';
+row2.innerHTML = createBox(images[1], '🥈 อันดับ 2') + createBox(images[2], '🥉 อันดับ 3');
+container.appendChild(row2);
+
+// 🔹 ที่เหลือ (อันดับ 4 ลงไป) — เรียงทีละ 4 รูปต่อแถว
+for (let i = 3; i < images.length; i += 4) {
+  const row = document.createElement('div');
+  row.className = 'pyramid-row';
+  const subset = images.slice(i, i + 4);
+  subset.forEach(img => {
+    row.innerHTML += createBox(img, `อันดับ ${img.rank}`);
+  });
+  container.appendChild(row);
+}
+
+function createBox(img, rankText) {
+  return `
+    <div class="image-box">
+      <div class="image-rank">${rankText}</div>
+      <img src="${img.url}" alt="${img.name}">
+      <div class="image-name">${img.name}</div>
+      <div class="score">${img.score.toLocaleString()} เบรี</div>
+    </div>`;
+}
+</script>
+</body>
+</html>
