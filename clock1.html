@@ -142,7 +142,7 @@
     background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
     ยืนยัน
   </button>
-  <p id="passwordError" style="color: red; margin-top: 10px; display: none;">รหัสผ่านไม่ถูกต้อง</p>
+  <p id="passwordError" style="color: red; margin-top: 18px; display: none;">รหัสผ่านไม่ถูกต้อง</p>
 </div>
   
   <div id="startButtonOverlay">
@@ -221,7 +221,7 @@
 
   <script>
 
-      const correctPassword = "888"; // 🔐 ตั้งรหัสที่ต้องการได้ที่นี่
+      const correctPassword = "bbb"; // 🔐 ตั้งรหัสที่ต้องการได้ที่นี่
 
   function checkPassword() {
     const input = document.getElementById("passwordInput").value;
@@ -233,7 +233,7 @@
       errorText.style.display = "block";
       setTimeout(() => {
         location.reload(); // 🔁 รีเฟรชหน้าเว็บ
-      }, 1500);
+      }, 1000);
     }
   }
     
