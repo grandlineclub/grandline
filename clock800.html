@@ -37,7 +37,7 @@
 
     #timerContainer {
       display: flex; align-items: center; justify-content: center;
-      position: relative; margin-bottom: 1px; flex-direction: column;
+      position: lative; margin-bottom: 1px; flex-diction: column;
     }
     .logo { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
     #timer { font-size: 188px; font-weight: bold; margin: 0; line-height: 1; }
@@ -461,7 +461,7 @@
 }
 
     function updateAverageStack() {
-      if (remain <= 4) { averageStackDisplay.style.display = "none"; return; }
+      if (remain <= 1) { averageStackDisplay.style.display = "none"; return; }
       averageStackDisplay.style.display = "block";
       if (buyIn > 0 && remain > 0) {
         const avg = Math.floor((buyIn * 10000) / remain);
