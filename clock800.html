@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet" />
+  <title>Grand Line Poker Clock</title>
+  <style>
+    .header {
+      background-color: #111;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      border-bottom: 1px solid #444;
+    }
+    .header a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    .header a:hover { background-color: #222; }
+
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      transition: background-color 0.5s ease;
+    }
+
+    #tournamentName { font-size: 32px; font-weight: bold; margin-bottom: 0; margin-top: 140px; }
+
+    #timerContainer {
+      display: flex; align-items: center; justify-content: center;
+      position: relative; margin-bottom: 1px; flex-direction: column;
+    }
+    .logo { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
+    #timer { font-size: 188px; font-weight: bold; margin: 0; line-height: 1; }
+
+    #designerCredit {
+      color: #222; position: absolute; right: 10px; top: 0; bottom: 0; margin: auto 0;
+      font-size: 14px; font-style: italic; opacity: 0.6; height: fit-content; pointer-events: none;
+    }
+    #progressBarContainer {
+      width: 100%; height: 20px; background-color: #222; border-radius: 10px; overflow: hidden;
+      margin-top: 4px; max-width: 600px; position: relative;
+    }
+
+    #pauseOverlay {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 140px; font-weight: bold; color: #00f; display: none; pointer-events: none;
+    }
+
+    .info { font-size: 68px; font-weight: bold; font-family: 'Kanit', sans-serif; margin: 1px 0; }
+
+    #nextLevel { font-size: 28px; font-weight: bold; font-family: 'Kanit', sans-serif; color:#FF8F6B; }
+
+    #averageStack { font-size: 28px; font-weight: bold; font-family: 'Kanit', sans-serif; color:#81D8D0; }
+
+#playerInfo {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: 'Kanit', sans-serif;
+  margin-top: 4px;
+}
+
+#playerInfo .label {
+  color: #FFFFFF;   /* คำว่า Players: */
+}
+#playerRemain {
+  color: #FFEB3B;   /* ผู้เล่นที่เหลือ เหมือน Average */
+}
+#playerBuyIn {
+  color: #FFEB3B;   /* ผู้เล่นสมัครทั้งหมด */
+}
+
+    button {
+      font-size: 20px; margin: 10px; padding: 10px 20px; background-color: #444;
+      border: none; color: white; cursor: pointer; border-radius: 5px;
+    }
+    button:hover { background-color: #666; }
+
+    .controls { display: flex; justify-content: space-between; flex-wrap: wrap; max-width: 700px; margin: 0 auto; margin-top: 6px; }
+    #progressBar { height: 100%; width: 100%; background: green; transition: width 1s linear, background 0.5s ease; }
+
+    #prizePoolDisplay { font-size: 38px; line-height: 1.6; white-space: pre-line; }
+
+    .input-section { display: flex; justify-content: center; gap: 10px; margin-top: 200px; flex-wrap: wrap; }
+    .input-box { display: flex; align-items: center; gap: 10px; }
+    .input-box span { font-size: 20px; }
+    .input-box button { padding: 4px 10px; }
+
+    #rotatingContainer {
+      width: 100%; overflow: hidden; position: relative; height: 38px; margin-top: 6px;
+      max-width: 600px; margin-left: auto; margin-right: auto;
+    }
+    #rotatingMessage {
+      display: inline-block; white-space: nowrap; position: absolute; will-change: transform;
+      animation: scrollMessage 15s linear infinite; font-size: 28px; color: #ffeb3b; font-family: 'Kanit', sans-serif;
+      width: 100%; text-align: center;
+    }
+    @keyframes scrollMessage {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-150%); }
+    }
+
+    /* Start overlay */
+    #startButtonOverlay {
+      position: fixed; inset: 0; background-color: rgba(0,0,0,0.85);
+      display: flex; justify-content: center; align-items: center; z-index: 1000;
+    }
+    #startButton {
+      font-size: 40px; padding: 20px 40px; background-color: #00f; color: #fff; border: none; cursor: pointer; border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 🔒 Password Overlay -->
+<div id="passwordOverlay" style="
+  position: fixed; 
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.95);
+  color: white;
+  display: flex; 
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
+  font-family: 'Kanit', sans-serif;
+  z-index: 9999;">
+  <h2>กรอกรหัสเพื่อเริ่มเกม</h2>
+  <input type="password" id="passwordInput" placeholder="รหัสผ่าน" 
+    style="padding: 10px; font-size: 18px; border-radius: 5px; border: none; text-align:center;">
+  <button onclick="checkPassword()" style="
+    margin-top: 15px; padding: 10px 20px; font-size: 18px; 
+    background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    ยืนยัน
+  </button>
+  <p id="passwordError" style="color: red; margin-top: 18px; display: none;">รหัสผ่านไม่ถูกต้อง</p>
+</div>
+  
+  <div id="startButtonOverlay">
+    <button id="startButton">Start Clock</button>
+  </div>
+
+  <div class="header">
+    <a href="index.html">🏠 Home</a>
+    <a href="clock1.html">⏰ Clock</a>
+    <a href="index.html">🏆 Ranking</a>
+    <a href="drawchart.html">♠️ Out Hit Card</a>
+    <a href="preflop.html">🃏 Preflop Range</a>
+  </div>
+
+  <div id="tournamentName">Grand Line Tournament 2025</div>
+
+  <div id="rotatingContainer"><div id="rotatingMessage"></div></div>
+
+  <div id="timerContainer">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 30px;">
+      <img class="logo" src="https://img2.pic.in.th/pic/IMG_3907b97570236459f0f7.png" alt="Logo Left" />
+      <div id="timer">00:10:00</div>
+      <img class="logo" src="https://img2.pic.in.th/pic/IMG_3907b97570236459f0f7.png" alt="Logo Right" />
+      <div id="pauseOverlay">PAUSE</div>
+    </div>
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+      <div id="designerCredit">Design by NewZ Sensei</div>
+    </div>
+  </div>
+
+  <div class="info" id="blinds">100/200</div>
+  <div class="info" id="nextLevel">Next level: 200/400 (400)</div>
+  <div class="info" id="averageStack">Average Stack: -</div>
+  <div id="playerInfo">
+  <span class="label">Players:</span>
+  <span id="playerRemain">9</span> /
+  <span id="playerBuyIn">9</span>
+</div>
+  <div class="info" id="prizePoolDisplay" style="display: none;">Prize Pool: -</div>
+
+  <div class="input-section">
+    <div class="input-box">
+      <span>Remaining:</span>
+      <button onclick="adjustRemain(-1)">-</button>
+      <span id="remainCount">9</span>
+      <button onclick="adjustRemain(1)">+</button>
+    </div>
+    <div class="input-box">
+      <span>Register</span>
+      <button onclick="adjustBuyIn(-1)">-</button>
+      <span id="buyInCount">9</span>
+      <button onclick="adjustBuyIn(1)">+</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button onclick="confirmPrevLevel()">Previous</button>
+    <button onclick="subtractTime()">-30</button>
+    <button onclick="togglePause()"><span id="pausePlayText">Pause</span></button>
+    <button onclick="addTime()">+30</button>
+    <button onclick="confirmNextLevel()">Next</button>
+  </div>
+
+<div class="input-box booking-bonus" style="margin-top: 40px; display: flex; flex-direction: column; align-items: center;">
+  <span>Booking Bonus:</span>
+  <input type="number" id="bookingBonusInput" value="800" 
+         style="width:100px; font-size:18px; text-align:right; margin-top: 8px;" 
+         oninput="updateBookingBonus()" />
+</div>
+
+
+  <audio id="alert60Custom" preload="auto" src="https://media.vocaroo.com/mp3/1aQzREpVljO0"></audio>
+  <audio id="countdown"    preload="auto" src="https://media.vocaroo.com/mp3/1ljAIqnw289L"></audio>
+  <audio id="whistleSound" preload="auto" src="https://media.vocaroo.com/mp3/1mS0nADire2c"></audio>
+
+  <script>
+
+      const correctPassword = "bbb"; // 🔐 ตั้งรหัสที่ต้องการได้ที่นี่
+
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    const errorText = document.getElementById("passwordError");
+
+    if (input === correctPassword) {
+      document.getElementById("passwordOverlay").style.display = "none";
+    } else {
+      errorText.style.display = "block";
+      setTimeout(() => {
+        location.reload(); // 🔁 รีเฟรชหน้าเว็บ
+      }, 1000);
+    }
+  }
+    
+    const levels = [
+      { blinds: "100 / 100",  duration: 900 },
+      { blinds: "100 / 200",  duration: 899 },
+      { blinds: "200 / 300",  duration: 899 },
+      { blinds: "200 / 400",  duration: 899 },
+      { blinds: "300 / 500",  duration: 899 },
+      { blinds: "300 / 600",  duration: 899 },
+      { blinds: "400 / 800",  duration: 899 },
+      { blinds: "500 / 1,000",duration: 899 },
+      { blinds: "600 / 1,200",duration: 899 },
+      { blinds: "700 / 1,500",duration: 899 },
+      { blinds: "1,000 / 2,000", duration: 899 },
+      { blinds: "1,500 / 3,000", duration: 899 },
+      { blinds: "2,000 / 4,000", duration: 599 },
+      { blinds: "2,000 / 5,000", duration: 599 },
+      { blinds: "3,000 / 6,000", duration: 599 },
+      { blinds: "4,000 / 8,000", duration: 599 },
+      { blinds: "5,000 / 10,000", duration: 599 },
+      { blinds: "7,000 / 15,000", duration: 599 },
+      { blinds: "10,000 / 20,000", duration: 599 },
+      { blinds: "20,000 / 40,000", duration: 599 },
+      { blinds: "30,000 / 60,000", duration: 599 },
+      { blinds: "40,000 / 80,000", duration: 599 },
+      { blinds: "50,000 / 100,000", duration: 599 }
+    ];
+
+    let currentLevel = 0;
+    let timeLeft = levels[currentLevel].duration;
+    let countdown;
+    let isPaused = false;
+    let hasStarted = false;
+    let warned60 = false;
+    let warned10 = false;
+    let warnedEnd = false;
+
+    let buyIn = 9;
+    let remain = 9;
+
+    const timerDisplay = document.getElementById("timer");
+    const pauseOverlay = document.getElementById("pauseOverlay");
+    const pausePlayText = document.getElementById("pausePlayText");
+    const blindsDisplay = document.getElementById("blinds");
+
+    const nextLevelDisplay = document.getElementById("nextLevel");
+    const averageStackDisplay = document.getElementById("averageStack");
+    const playerInfoDisplay = document.getElementById("playerInfo");
+    const prizePoolDisplay = document.getElementById("prizePoolDisplay");
+    const alert60Custom = document.getElementById("alert60Custom");
+    const countdownSound = document.getElementById("countdown");
+    const whistleSound = document.getElementById("whistleSound");
+    const progressBar = document.getElementById("progressBar");
+    const rotatingContainer = document.getElementById("rotatingContainer");
+    const rotatingMessage = document.getElementById("rotatingMessage");
+
+    const startButtonOverlay = document.getElementById("startButtonOverlay");
+    const startButton = document.getElementById("startButton");
+
+    function formatTime(seconds) {
+      const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const secs = String(seconds % 60).padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function updateDisplay() {
+      timerDisplay.textContent = formatTime(timeLeft);
+      const currentBlinds = levels[currentLevel].blinds;
+
+      if (currentBlinds === "Break") {
+        blindsDisplay.textContent = "Break";
+      } else {
+        const [sb, bb] = currentBlinds.split('/').map(s => s.trim());
+        blindsDisplay.textContent = `${sb} / ${bb} (${bb})`;
+
+        const bbValue = parseInt(bb.replace(/,/g, ''));
+        const prizeVisible = prizePoolDisplay.style.display !== "none";
+        rotatingContainer.style.display = (bbValue >= 1200 || prizeVisible) ? "none" : "block";
+      }
+
+      if (currentLevel < levels.length - 1) {
+        const next = levels[currentLevel + 1];
+        if (next.blinds === "Break") {
+          nextLevelDisplay.textContent = "Next level: Break";
+        } else {
+          const nextBig = next.blinds.split('/')[1].trim();
+          nextLevelDisplay.textContent = `Next level: ${next.blinds} (${nextBig})`;
+        }
+      } else {
+        nextLevelDisplay.textContent = "Final Level";
+      }
+
+      const totalDuration = levels[currentLevel].duration;
+      const percentage = (timeLeft / totalDuration) * 100;
+      progressBar.style.width = percentage + "%";
+
+      if (percentage > 40) {
+        progressBar.style.background = "linear-gradient(to right, #00cc66, #aaff00)";
+      } else if (percentage > 20) {
+        progressBar.style.background = "linear-gradient(to right, #ffee00, #ff9900)";
+      } else {
+        progressBar.style.background = "linear-gradient(to right, #ff3300, #ff0000)";
+      }
+
+      updateAverageStack();
+      updatePlayerInfo();
+      updatePrizePool();
+
+      const msgIndex = Math.floor((levels[currentLevel].duration - timeLeft) / 120) % messages.length;
+      rotatingMessage.textContent = messages[msgIndex];
+    }
+
+    function safePlay(audioEl, label) {
+      try {
+        if (!audioEl.paused) {
+          audioEl.pause();
+          audioEl.currentTime = 0;
+        }
+        const p = audioEl.play();
+        if (p && typeof p.then === "function") {
+          p.catch(err => {
+            if (err.name === "NotAllowedError" || err.name === "AbortError") {
+              // เป็นปกติ
+            } else {
+              console.error(label + " play error:", err);
+            }
+          });
+        }
+      } catch (e) {
+        console.error(label + " exception:", e);
+      }
+    }
+    
+    function startLevel() {
+      timeLeft = levels[currentLevel].duration;
+      updateDisplay();
+      warned60 = false;
+      warned10 = false;
+      warnedEnd = false;
+
+      clearInterval(countdown);
+      countdown = setInterval(() => {
+        if (!isPaused) {
+          timeLeft--;
+          if (timeLeft < 0) timeLeft = 0;
+
+          if (timeLeft <= 60 && !warned60) {
+            safePlay(alert60Custom, "60s");
+            warned60 = true;
+          }
+
+          if (timeLeft <= 10 && !warned10) {
+            safePlay(countdownSound, "10s");
+            warned10 = true;
+          }
+
+          document.body.style.backgroundColor = (timeLeft <= 10 && timeLeft > 0) ? "#900" : "#000";
+
+          if (timeLeft <= 1 && !warnedEnd) {
+            safePlay(whistleSound, "end");
+            warnedEnd = true;
+          }
+
+          updateDisplay();
+
+          if (timeLeft <= 0) {
+            document.body.style.backgroundColor = "#000";
+            clearInterval(countdown);
+            nextLevel();
+          }
+        }
+      }, 1000);
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+      pausePlayText.textContent = isPaused ? "Play" : "Pause";
+      pauseOverlay.style.display = isPaused ? "block" : "none";
+    }
+
+    function nextLevel() {
+      if (currentLevel < levels.length - 1) {
+        currentLevel++;
+        startLevel();
+      } else {
+        timerDisplay.textContent = "つづく";
+        blindsDisplay.textContent = "โปรดติดตามตอนต่อไป";
+        nextLevelDisplay.textContent = "";
+        progressBar.style.width = "0%";
+      }
+    }
+
+    function prevLevel() {
+      if (currentLevel > 0) {
+        currentLevel--;
+        startLevel();
+      }
+    }
+
+    function confirmNextLevel() { if (confirm("คุณต้องการ Next ?")) nextLevel(); }
+    function confirmPrevLevel() { if (confirm("คุณต้องการ Previous ?")) prevLevel(); }
+    function addTime() { timeLeft += 30; updateDisplay(); }
+    function subtractTime() { timeLeft = Math.max(0, timeLeft - 30); updateDisplay(); }
+
+    function adjustBuyIn(val) {
+      if (val > 0) { if (!confirm("ยืนยันเพิ่ม ผู้เล่น Buy in ใช่หรือไม่?")) return; }
+      else if (val < 0) { if (!confirm("ยืนยันลบ ผู้เล่น Buy in ใช่หรือไม่?")) return; }
+      buyIn = Math.max(0, buyIn + val);
+      document.getElementById("buyInCount").textContent = buyIn;
+      updateDisplay();
+    }
+    function adjustRemain(val) {
+      remain = Math.max(0, remain + val);
+      document.getElementById("remainCount").textContent = remain;
+      updateDisplay();
+    }
+
+  function updatePlayerInfo() {
+  playerInfoDisplay.innerHTML = `
+    <span class="label">Players:</span>
+    <span id="playerRemain">${remain}</span> /
+    <span id="playerBuyIn">${buyIn}</span>
+  `;
+}
+
+    function updateAverageStack() {
+      if (remain <= 4) { averageStackDisplay.style.display = "none"; return; }
+      averageStackDisplay.style.display = "block";
+      if (buyIn > 0 && remain > 0) {
+        const avg = Math.floor((buyIn * 10000) / remain);
+        averageStackDisplay.textContent = `Average Stack: ${avg.toLocaleString()}`;
+      } else {
+        averageStackDisplay.textContent = "Average Stack: -";
+      }
+    }
+
+let bookingBonus = 200;
+
+function updateBookingBonus() {
+  bookingBonus = parseInt(document.getElementById("bookingBonusInput").value) || 0;
+  updateDisplay(); // refresh การคำนวนทันที
+}
+
+  function updatePrizePool() {
+  const blindsValue = levels[currentLevel].blinds;
+  if (!blindsValue.includes(" / ")) { 
+    prizePoolDisplay.style.display = "none"; 
+    return; 
+  }
+
+  const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
+  if (bb < 1200) { 
+    prizePoolDisplay.style.display = "none"; 
+    return; 
+  }
+  prizePoolDisplay.style.display = "block";
+
+  const totalPrize = ((buyIn-1) * 800);
+  let text = ``;
+
+  if (buyIn <= 15) {
+    // 1 รางวัล
+    let firstPrize = Math.round(totalPrize / 100) * 100;
+    let firstTotal = firstPrize + bookingBonus;
+    text += `🥇 ${firstPrize.toLocaleString()} + ${bookingBonus.toLocaleString()} = ${firstTotal.toLocaleString()}`;
+  } else if (buyIn <= 23) {
+    // 2 รางวัล
+    let firstPrize = Math.round(totalPrize * 0.70 / 100) * 100;
+    let secondPrize = Math.round(totalPrize * 0.30 / 100) * 100;
+    let diff = totalPrize - (firstPrize + secondPrize);
+    firstPrize += diff;
+
+    // แบ่ง booking bonus ครึ่งละ
+    let bonusSplit = Math.floor(bookingBonus / 2);
+
+    let firstTotal = firstPrize + bonusSplit;
+    let secondTotal = secondPrize + bonusSplit;
+
+    text += `🥇 ${firstPrize.toLocaleString()} + ${bonusSplit.toLocaleString()} = ${firstTotal.toLocaleString()}<br>`;
+    text += `🥈 ${secondPrize.toLocaleString()} + ${bonusSplit.toLocaleString()} = ${secondTotal.toLocaleString()}`;
+  } else {
+    // 3 รางวัล
+    let firstPrize = Math.round(totalPrize * 0.5 / 100) * 100;
+    let secondPrize = Math.round(totalPrize * 0.3 / 100) * 100;
+    let thirdPrize = Math.round(totalPrize * 0.2 / 100) * 100;
+    let diff = totalPrize - (firstPrize + secondPrize + thirdPrize);
+    firstPrize += diff;
+
+    // แบ่ง bonus เฉพาะอันดับ 1
+    let firstTotal = firstPrize + bookingBonus;
+
+    text += `🥇 ${firstPrize.toLocaleString()} + ${bookingBonus.toLocaleString()} = ${firstTotal.toLocaleString()}<br>`;
+    text += `🥈 ${secondPrize.toLocaleString()}<br>`;
+    text += `🥉 ${thirdPrize.toLocaleString()}`;
+  }
+
+  prizePoolDisplay.innerHTML = text;
+}
+
+    const messages = [
+      "ไม่มีเหตุผลที่ต้องเล่นทุกมือ แต่ทุกมือต้องมีเหตุผลที่เล่น",
+      "การบลัฟที่พลาดที่สุด คือการบลัฟตัวเองว่าคุณไม่แพ้",
+      "ไพ่ในมือไม่ได้น่ากลัวเท่าความกลัวในใจคุณเอง",
+      "ดวงอาจพาคุณไปได้ไกล แต่ฝีมือจะพาคุณไปได้ไกลกว่า",
+      "จงใช้สมองในการเล่น และใช้อารมณ์ในการหลอก",
+      "บางครั้งการไม่เล่น คือการเล่นที่เฉียบที่สุด",
+      "ทุกการหมอบ คือการรักษาทุนไว้รบในตาถัดไป",
+      "คนที่แพ้คือคนที่รีบร้อน คนที่ชนะคือคนที่รอได้",
+      "ไพ่ที่ดีทำให้ชนะรอบหนึ่ง แต่การควบคุมตัวเองทำให้ชนะทั้งเกม",
+      "ความกล้าไม่ได้อยู่ที่การ All in แต่มันอยู่ที่การหมอบ",
+      "ฝีมือไม่ได้วัดจากจำนวนครั้งที่ชนะ แต่นับจากจำนวนครั้งที่อ่านเกมได้ถูกต้อง",
+      "โป๊กเกอร์ไม่ใช่เรื่องของโชค แต่มันคือการใช้โชคให้คุ้มค่าที่สุด",
+      "จงเรียก Value จากผู้เล่น Re-Buy",
+      "ที่นี้ Grand Line จงอย่ากลัว เพราะถ้าคุณกลัว มันจะเกิดขึ้นจริง"
+    ];
+
+    function primeAudio(audioEl) {
+      if (!audioEl) return;
+      try {
+        audioEl.volume = 0;
+        audioEl.muted = true;
+        const p = audioEl.play();
+        if (p && typeof p.then === "function") {
+          p.then(() => {
+            audioEl.pause();
+            audioEl.currentTime = 0;
+            audioEl.muted = false;
+            audioEl.volume = 1;
+          }).catch(()=>{});
+        }
+      } catch (_) {}
+    }
+
+    startButton.addEventListener('click', () => {
+      startButtonOverlay.style.display = 'none';
+      hasStarted = true;
+
+      primeAudio(alert60Custom);
+      primeAudio(countdownSound);
+      primeAudio(whistleSound);
+
+      startLevel();
+    });
+
+    updateDisplay();
+  </script>
+
+</body>
+</html>
