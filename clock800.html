@@ -525,19 +525,25 @@ function updateBookingBonus() {
     text += `🥇 ${firstPrize.toLocaleString()} + ${bonusSplit.toLocaleString()} = ${firstTotal.toLocaleString()}<br>`;
     text += `🥈 ${secondPrize.toLocaleString()} + ${bonusSplit.toLocaleString()} = ${secondTotal.toLocaleString()}`;
   } else {
-    // 3 รางวัล
-    let firstPrize = Math.round(totalPrize * 0.5 / 100) * 100;
-    let secondPrize = Math.round(totalPrize * 0.3 / 100) * 100;
-    let thirdPrize = Math.round(totalPrize * 0.2 / 100) * 100;
-    let diff = totalPrize - (firstPrize + secondPrize + thirdPrize);
-    firstPrize += diff;
+    // 5 รางวัล
+    let p1 = Math.round(totalPrize * 0.40 / 100) * 100;
+    let p2 = Math.round(totalPrize * 0.25 / 100) * 100;
+    let p3 = Math.round(totalPrize * 0.20 / 100) * 100;
+    let p4 = Math.round(totalPrize * 0.10 / 100) * 100;
+    let p5 = Math.round(totalPrize * 0.05 / 100) * 100;
 
-    // แบ่ง bonus เฉพาะอันดับ 1
-    let firstTotal = firstPrize + bookingBonus;
+    // ปรับส่วนต่าง (diff) ให้รางวัลรวมตรง totalPrize
+    let diff = totalPrize - (p1 + p2 + p3 + p4 + p5);
+    p1 += diff; // ให้ส่วนต่างกับอันดับ 1
 
-    text += `🥇 ${firstPrize.toLocaleString()} + ${bookingBonus.toLocaleString()} = ${firstTotal.toLocaleString()}<br>`;
-    text += `🥈 ${secondPrize.toLocaleString()}<br>`;
-    text += `🥉 ${thirdPrize.toLocaleString()}`;
+    // โบนัสให้เฉพาะอันดับ 1
+    let firstTotal = p1 + bookingBonus;
+
+    text += `🥇 ${p1.toLocaleString()} + ${bookingBonus.toLocaleString()} = ${firstTotal.toLocaleString()}<br>`;
+    text += `🥈 ${p2.toLocaleString()}<br>`;
+    text += `🥉 ${p3.toLocaleString()}<br>`;
+    text += `4th ${p4.toLocaleString()}<br>`;
+    text += `5th ${p5.toLocaleString()}`;
   }
 
   prizePoolDisplay.innerHTML = text;
