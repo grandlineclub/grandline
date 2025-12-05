@@ -420,7 +420,7 @@
       if (remain <= 4) { averageStackDisplay.style.display = "none"; return; }
       averageStackDisplay.style.display = "block";
       if (buyIn > 0 && remain > 0) {
-        const avg = Math.floor((buyIn * 12000) / remain);
+        const avg = Math.floor((buyIn * 10000) / remain);
         averageStackDisplay.textContent = `Average Stack: ${avg.toLocaleString()}`;
       } else {
         averageStackDisplay.textContent = "Average Stack: -";
