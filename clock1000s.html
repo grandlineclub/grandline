@@ -445,7 +445,7 @@ function updateBookingBonus() {
   }
 
   const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
-  if (bb < 3100) { 
+  if (bb < 1600) { 
     prizePoolDisplay.style.display = "none"; 
     return; 
   }
