@@ -133,7 +133,7 @@
     <a href="preflop.html">🃏 Preflop Range</a>
   </div>
 
-  <div id="tournamentName">Grand Line Tournament 2025</div>
+  <div id="tournamentName">8Monday BirthDay Tournament 2025</div>
 
   <div id="rotatingContainer"><div id="rotatingMessage"></div></div>
 
@@ -423,7 +423,7 @@
       if (remain <= 4) { averageStackDisplay.style.display = "none"; return; }
       averageStackDisplay.style.display = "block";
       if (buyIn > 0 && remain > 0) {
-        const avg = Math.floor((buyIn * 30000) / remain);
+        const avg = Math.floor((buyIn * 15000) / remain);
         averageStackDisplay.textContent = `Average Stack: ${avg.toLocaleString()}`;
       } else {
         averageStackDisplay.textContent = "Average Stack: -";
