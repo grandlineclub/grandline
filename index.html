@@ -45,6 +45,17 @@
     background-color: #222;
   }
 
+  .ranking-wrapper {
+    display: flex;
+    gap: 30px;
+    padding: 20px;
+    align-items: flex-start;
+  }
+
+  .ranking-column {
+    flex: 1;
+  }
+
   .pyramid-container {
     display: flex;
     flex-direction: column;
@@ -70,7 +81,7 @@
     box-shadow: 0 4px 12px rgba(255,255,255,0.05);
     width: 120px;
     overflow: hidden;
-    height: 250px;
+    height: 270px;
   }
 
   .image-rank {
@@ -82,7 +93,7 @@
 
   .image-box img {
     width: 100%;
-    height: 152px;
+    height: 150px;
     object-fit: cover;
     object-position: top;
     border-radius: 8px;
@@ -100,6 +111,12 @@
     font-weight: bold;
     color: #ffd700;
   }
+
+  @media (max-width: 900px) {
+    .ranking-wrapper {
+      flex-direction: column;
+    }
+  }
   </style>
 </head>
 <body>
@@ -113,10 +130,22 @@
   <a href="preflop.html">🃏 Preflop Range</a>
 </div>
 
-<h1>Grand Line Ranking</h1>
-<div class="pyramid-container" id="pyramidContainer"></div>
+<div class="ranking-wrapper">
+
+  <div class="ranking-column">
+    <h1>Pirates Ranking</h1>
+    <div class="pyramid-container" id="pyramidContainer"></div>
+  </div>
+
+  <div class="ranking-column">
+    <h1>Marine Ranking</h1>
+    <div class="pyramid-container" id="pyramidContainerB"></div>
+  </div>
+
+</div>
 
 <script>
+/* ================== RANKING A ================== */
 const images = [
   { name: 'ReR9', score: 52000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_5412b03d93dc9ea33ec6.jpeg' },
   { name: '8Monday', score: 52000000, url: 'https://img2.pic.in.th/pic/IMG_5360d1ee127136b14a1e.jpeg' },
@@ -140,54 +169,81 @@ const images = [
   { name: '13aDz', score: 20000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_8046688028c23cb862a8.jpeg'},
   { name: 'Yakrubya', score: 27000000, url: 'https://img2.pic.in.th/pic/IMG_6898939639fd99a0aec9.jpeg'},
   { name: 'Balll', score: 10000000, url: 'https://img5.pic.in.th/file/secure-sv1/IMG_8379a8ad73f57f4052cc.jpeg'},
+ { name: 'Gochu MooKrob', score: 10000000, url: 'https://img2.pic.in.th/IMG_1940.jpeg' },
   { name: 'OHMMAKER', score: 65000000, url: 'https://img2.pic.in.th/pic/IMG_5690abf3e4134a105391.jpeg' }
 ];
 
-// ✅ เรียงตามคะแนน (มาก → น้อย)
-images.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+images.sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name));
+images.forEach((p,i)=>p.rank=(i>0&&p.score===images[i-1].score)?images[i-1].rank:i+1);
 
-// ✅ จัดอันดับ โดยถ้าคะแนนเท่ากันจะได้ลำดับเดียวกัน
-let rank = 1;
-images.forEach((p, i) => {
-  if (i > 0 && p.score === images[i - 1].score) {
-    p.rank = images[i - 1].rank;
-  } else {
-    p.rank = i + 1;
-  }
-});
+const container=document.getElementById('pyramidContainer');
 
-const container = document.getElementById('pyramidContainer');
-
-// 🥇 อันดับ 1 แถวเดียว
-const row1 = document.createElement('div');
-row1.className = 'pyramid-row';
-row1.innerHTML = createBox(images[0], '🥇 อันดับ 1');
+let row1=document.createElement('div');
+row1.className='pyramid-row';
+row1.innerHTML=createBox(images[0],'🥇 อันดับ 1');
 container.appendChild(row1);
 
-// 🥈 + 🥉 แถวเดียวกัน
-const row2 = document.createElement('div');
-row2.className = 'pyramid-row';
-row2.innerHTML = createBox(images[1], '🥈 อันดับ 2') + createBox(images[2], '🥉 อันดับ 3');
+let row2=document.createElement('div');
+row2.className='pyramid-row';
+row2.innerHTML=createBox(images[1],'🥈 อันดับ 2')+createBox(images[2],'🥉 อันดับ 3');
 container.appendChild(row2);
 
-// 🔹 ที่เหลือ (อันดับ 4 ลงไป) — เรียงทีละ 4 รูปต่อแถว
-for (let i = 3; i < images.length; i += 4) {
-  const row = document.createElement('div');
-  row.className = 'pyramid-row';
-  const subset = images.slice(i, i + 4);
-  subset.forEach(img => {
-    row.innerHTML += createBox(img, `อันดับ ${img.rank}`);
-  });
+for(let i=3;i<images.length;i+=4){
+  const row=document.createElement('div');
+  row.className='pyramid-row';
+  images.slice(i,i+4).forEach(p=>row.innerHTML+=createBox(p,`อันดับ ${p.rank}`));
   container.appendChild(row);
 }
 
+/* ================== RANKING B ================== */
+const imagesB=[
+  { name:'Sensei', score:18, url:'https://img5.pic.in.th/file/secure-sv1/IMG_1934268c0be7a902f81d.jpeg' },
+  { name:'Bank GGeznoob', score:4, url:'https://img5.pic.in.th/file/secure-sv1/IMG_1937a9bdb6b47caacf06.jpeg' },
+  { name:'Au TuNa', score:4, url:'https://img2.pic.in.th/IMG_1938.jpeg' },
+  { name:'Goodluck2us', score:3, url:'https://img2.pic.in.th/IMG_1935.jpeg' },
+  { name:'Namo A Ten', score:3, url:'https://img5.pic.in.th/file/secure-sv1/IMG_1936caf5b1ecf87ff640.jpeg' }
+];
+
+imagesB.sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name));
+imagesB.forEach((p,i)=>p.rank=(i>0&&p.score===imagesB[i-1].score)?imagesB[i-1].rank:i+1);
+
+const containerB=document.getElementById('pyramidContainerB');
+
+let rb1=document.createElement('div');
+rb1.className='pyramid-row';
+rb1.innerHTML=createBoxStar(imagesB[0],'🥇 อันดับ 1');
+containerB.appendChild(rb1);
+
+let rb2=document.createElement('div');
+rb2.className='pyramid-row';
+rb2.innerHTML=createBoxStar(imagesB[1],'🥈 อันดับ 2')+createBoxStar(imagesB[2],'🥉 อันดับ 3');
+containerB.appendChild(rb2);
+
+for(let i=3;i<imagesB.length;i+=4){
+  const row=document.createElement('div');
+  row.className='pyramid-row';
+  imagesB.slice(i,i+4).forEach(p=>row.innerHTML+=createBoxStar(p,`อันดับ ${p.rank}`));
+  containerB.appendChild(row);
+}
+
+/* ===== ฟังก์ชัน ===== */
 function createBox(img, rankText) {
   return `
     <div class="image-box">
       <div class="image-rank">${rankText}</div>
-      <img src="${img.url}" alt="${img.name}">
+      <img src="${img.url}">
       <div class="image-name">${img.name}</div>
       <div class="score">${img.score.toLocaleString()} เบรี</div>
+    </div>`;
+}
+
+function createBoxStar(img, rankText) {
+  return `
+    <div class="image-box">
+      <div class="image-rank">${rankText}</div>
+      <img src="${img.url}">
+      <div class="image-name">${img.name}</div>
+      <div class="score">${img.score} ⭐</div>
     </div>`;
 }
 </script>
