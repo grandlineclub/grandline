@@ -248,9 +248,9 @@
       { blinds: "400 / 800",  duration: 899 },
       { blinds: "500 / 1,000",duration: 899 },
       { blinds: "600 / 1,200",duration: 699 },
-      { blinds: "800 / 1,500",duration: 699 },
+      { blinds: "800 / 1,600",duration: 699 },
       { blinds: "1,000 / 2,000", duration: 599 },
-      { blinds: "1,000 / 2,500", duration: 599 },
+      { blinds: "1,200 / 2,400", duration: 599 },
       { blinds: "1,500 / 3,000", duration: 599 },
       { blinds: "2,000 / 4,000", duration: 599 },
       { blinds: "2,000 / 5,000", duration: 599 },
@@ -258,7 +258,13 @@
       { blinds: "4,000 / 8,000", duration: 599 },
       { blinds: "5,000 / 10,000", duration: 599 },
       { blinds: "7,000 / 15,000", duration: 599 },
-      { blinds: "10,000 / 20,000", duration: 3599 }
+      { blinds: "10,000 / 20,000", duration: 599 },
+      { blinds: "15,000 / 30,000", duration: 599 },
+      { blinds: "20,000 / 40,000", duration: 599 },
+      { blinds: "25,000 / 50,000", duration: 599 },
+      { blinds: "30,000 / 60,000", duration: 599 },
+      { blinds: "40,000 / 80,000", duration: 599 },
+      { blinds: "50,000 / 100,000", duration: 3599 }
     ];
 
     let currentLevel = 0;
@@ -459,7 +465,7 @@
 }
 
     function updateAverageStack() {
-      if (remain <= 4) { averageStackDisplay.style.display = "none"; return; }
+      if (remain <= 2) { averageStackDisplay.style.display = "none"; return; }
       averageStackDisplay.style.display = "block";
       if (buyIn > 0 && remain > 0) {
         const avg = Math.floor((buyIn * 12000) / remain);
@@ -484,7 +490,7 @@ function updateBookingBonus() {
   }
 
   const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
-  if (bb < 1500) { 
+  if (bb < 1300) { 
     prizePoolDisplay.style.display = "none"; 
     return; 
   }
