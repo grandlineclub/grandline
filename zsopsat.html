@@ -484,13 +484,13 @@ function updateBookingBonus() {
   }
 
   const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
-  if (bb < 2400) { 
+  if (bb < 1000) { 
     prizePoolDisplay.style.display = "none"; 
     return; 
   }
   prizePoolDisplay.style.display = "block";
 
-  const totalPrize = ((buyIn-1) * 400);
+  const totalPrize = ((buyIn-1) * 200);
   let text = ``;
 
   if (buyIn <= 15) {
