@@ -471,7 +471,7 @@
       }
     }
 
-let bookingBonus = 200;
+let bookingBonus = 800;
 
 function updateBookingBonus() {
   bookingBonus = parseInt(document.getElementById("bookingBonusInput").value) || 0;
@@ -486,13 +486,13 @@ function updateBookingBonus() {
   }
 
   const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
-  if (bb < 1000) { 
+  if (bb < 2200) { 
     prizePoolDisplay.style.display = "none"; 
     return; 
   }
   prizePoolDisplay.style.display = "block";
 
-  const totalPrize = ((buyIn-1) * 200);
+  const totalPrize = ((buyIn-1) * 800);
   let text = ``;
 
   if (buyIn <= 15) {
