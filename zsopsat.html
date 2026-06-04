@@ -503,7 +503,7 @@ function calculateBookingBonus() {
   let netPerPlayer = calculateBookingBonus(); // เงินสุทธิจริง
 let bookingBonus = netPerPlayer; // ใช้เป็นโบนัส
 
-let totalPrize = Math.floor(netPerPlayer * Math.max(0, buyIn - 1));
+let totalPrize = Math.floor(netPerPlayer * Math.max(0, buyIn - 2));
 
 
   let text = ``;
