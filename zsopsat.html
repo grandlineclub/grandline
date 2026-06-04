@@ -510,7 +510,7 @@ let totalPrize = Math.floor(netPerPlayer * Math.max(0, buyIn - 2));
 
   if (buyIn <= 15) {
     let firstPrize = Math.round(totalPrize / 100) * 100;
-    let firstTotal = firstPrize + bookingBonus;
+    let firstTotal = firstPrize + (bookingBonus * 2);
 
     text += `🥇 ${firstPrize.toLocaleString()} + ${(bookingBonus*2).toLocaleString()} = ${firstTotal.toLocaleString()}`;
     
@@ -523,7 +523,7 @@ let totalPrize = Math.floor(netPerPlayer * Math.max(0, buyIn - 2));
     let bonusSplit = Math.floor((bookingBonus*2) / 2);
 
     let firstTotal = firstPrize + bonusSplit;
-    let secondTotal = secondPrize + bonusSplit;
+let secondTotal = secondPrize + bonusSplit;
 
     text += `🥇 ${firstPrize.toLocaleString()} + ${bonusSplit.toLocaleString()} = ${firstTotal.toLocaleString()}<br>`;
     text += `🥈 ${secondPrize.toLocaleString()} + ${bonusSplit.toLocaleString()} = ${secondTotal.toLocaleString()}`;
@@ -535,7 +535,7 @@ let totalPrize = Math.floor(netPerPlayer * Math.max(0, buyIn - 2));
     let diff = totalPrize - (firstPrize + secondPrize + thirdPrize);
     firstPrize += diff;
 
-    let firstTotal = firstPrize + bookingBonus;
+    let firstTotal = firstPrize + (bookingBonus * 2);
 
     text += `🥇 ${firstPrize.toLocaleString()} + ${(bookingBonus*2).toLocaleString()} = ${firstTotal.toLocaleString()}<br>`;
     text += `🥈 ${secondPrize.toLocaleString()}<br>`;
