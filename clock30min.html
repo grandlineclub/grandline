@@ -510,7 +510,7 @@ let totalPrize = Math.floor(netPerPlayer * Math.max(0, buyIn - 2));
 
     text += `🥇 ${firstPrize.toLocaleString()} + ${(bookingBonus*2).toLocaleString()} = ${firstTotal.toLocaleString()}`;
     
-  } else if (buyIn <= 13) {
+  } else if (buyIn <= 12) {
     let firstPrize = Math.round(totalPrize * 0.70 / 100) * 100;
     let secondPrize = Math.round(totalPrize * 0.30 / 100) * 100;
     let diff = totalPrize - (firstPrize + secondPrize);
