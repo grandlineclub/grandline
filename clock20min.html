@@ -493,7 +493,7 @@ function calculateBookingBonus() {
   }
 
   const [sb, bb] = blindsValue.split(" / ").map(s => parseInt(s.replace(/,/g, '')));
-  if (bb < 2200000) { 
+  if (bb < 2200) { 
     prizePoolDisplay.style.display = "none"; 
     return; 
   }
